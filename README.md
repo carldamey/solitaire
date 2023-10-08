@@ -1,7 +1,7 @@
 # Solitaire
 
 Klondike solitaire is the most commonly known and played version of the Solitaire family of card games. It is fondly remembered by those who grew up on older Windows operating systems, especially those without internet access, as many of these operating systems came with it installed alongside lackluster video editing software and strange royalty-free mp3s.
-![Solitaire Wireframe](/etc/Solitaire%20Wireframe.png))
+![Solitaire Wireframe](/etc/Solitaire%20Wireframe.png)
 
 ## MVP
 
