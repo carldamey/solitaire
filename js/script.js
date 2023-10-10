@@ -4,7 +4,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockpile, wastePile, acePiles
+  let deck, tableau, stockPile, wastePile, acePiles
 	/*----- cached elements  -----*/
 
 
@@ -14,7 +14,8 @@
 	/*----- functions -----*/
 
 function init() {
-  deck = []; 
+  deck = [];tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = {c: 0, d: 0, h: 0, s: 0}
+
   //Fill the deck array with card objects
   for (let suit in SUITS) {
     for (let i = 0; i <=12; i++) {
@@ -25,9 +26,13 @@ function init() {
 
   //Shuffle the deck
   deck.sort(() => Math.random() - .5)
+
+  // Fill the tableau with hidden cards
+  for (let i = 0; i <= 6; i++) {
+    while (tableau[i].length < i + 1) tableau[i].push("?")
+  }
 }
 
-acePiles = {c: 0, d: 0, h: 0, s: 0}
 
 init()
 console.log(deck)
