@@ -21,7 +21,7 @@ function init() {
   for (let suit in SUITS) {
     for (let i = 0; i <=12; i++) {
       SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
-      deck.push({suit: SUITS[suit], rank: RANKS[i], color})
+      deck.push({suit: SUITS[suit], rank: RANKS[i], color,})
     }
   }
 
@@ -71,6 +71,8 @@ function draw() {
 
 }
 
+
+// TODO fix bug with stock and waste pile lengths 
 // TODO clean formatting and remove vestigial comments
 // TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO delete console logs when finished
@@ -78,9 +80,6 @@ function draw() {
 /*
 
 
-When the stockpile is clicked, the top 3 cards are placed onto the waste pile, if there are fewer than 3 cards in the stockpile, add the last card to the stockpile
-If the empty stockpile is clicked, move all cards from the waste pile to the stockpile in reverse order
-Only a max of the top 3 wastepile cards are visible at any time
 
 
 
@@ -99,17 +98,12 @@ LEGAL MOVES:
   • An ace from the top of the waste pile to its respective empty ace pile
   • An ace from the tableau to its respective empty ace pile
 
-If the top card of a tableau is hidden, reveal it
-Deal all cards as hidden, then reveal the last index of each, keeping track of which cards are hidden by some other measure
-Maybe set aside a separate array of remaining cards, replacing the top "?"s in the array with a card from it, 
-something like, if the top index of this array is a ?, replace it with a card from the hiddenCards array.
 
 
 At the end of every move function, increment the move counter by 1 and check for a winner,
 if all ace piles have 13 as the top card, the player wins and is prompted to play again.
 
 When rendering:
-  If the top card of any tableau is a "?", then move a card from hiddenCards to that slot
   If a card is "?", then represent it with a face down card
 
 
