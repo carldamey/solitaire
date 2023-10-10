@@ -11,74 +11,21 @@
 
 
 	/*----- functions -----*/
-    /*----- constants -----*/
-const suits = ['s', 'c', 'd', 'h'];
-const ranks = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
 
-// Build an 'original' deck of 'card' objects used to create shuffled decks
-const originalDeck = buildOriginalDeck();
-renderDeckInContainer(originalDeck, document.getElementById('original-deck-container'));
+const deck = []
+const suits = ["c", "d", "h", "s"]
+const ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
-/*----- app's state (variables) -----*/
-let shuffledDeck;
 
-/*----- cached element references -----*/
-const shuffledContainer = document.getElementById('shuffled-deck-container');
-
-/*----- event listeners -----*/
-document.querySelector('button').addEventListener('click', renderNewShuffledDeck);
-
-/*----- functions -----*/
-function getNewShuffledDeck() {
-  // Create a copy of the originalDeck (leave originalDeck untouched!)
-  const tempDeck = [...originalDeck];
-  const newShuffledDeck = [];
-  while (tempDeck.length) {
-    // Get a random index for a card still in the tempDeck
-    const rndIdx = Math.floor(Math.random() * tempDeck.length);
-    // Note the [0] after splice - this is because splice always returns an array and we just want the card object in that array
-    newShuffledDeck.push(tempDeck.splice(rndIdx, 1)[0]);
+for (let suit in suits) {
+  for (let i = 0; i <=12; i++) {
+    deck.push({suit: suits[suit], rank: ranks[i]})
   }
-  return newShuffledDeck;
 }
 
-function renderNewShuffledDeck() {
-  // Create a copy of the originalDeck (leave originalDeck untouched!)
-  shuffledDeck = getNewShuffledDeck();
-  renderDeckInContainer(shuffledDeck, shuffledContainer);
-}
+console.log(deck)
 
-function renderDeckInContainer(deck, container) {
-  container.innerHTML = '';
-  // Let's build the cards as a string of HTML
-  let cardsHtml = '';
-  deck.forEach(function(card) {
-    cardsHtml += `<div class="card ${card.face}"></div>`;
-  });
-  // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup 
-  // const cardsHtml = deck.reduce(function(html, card) {
-  //   return html + `<div class="card ${card.face}"></div>`;
-  // }, '');
-  container.innerHTML = cardsHtml;
-}
 
-function buildOriginalDeck() {
-  const deck = [];
-  // Use nested forEach to generate card objects
-  suits.forEach(function(suit) {
-    ranks.forEach(function(rank) {
-      deck.push({
-        // The 'face' property maps to the library's CSS classes for cards
-        face: `${suit}${rank}`,
-        // Setting the 'value' property for game of blackjack, not war
-        value: Number(rank) || (rank === 'A' ? 11 : 10)
-      });
-    });
-  });
-  return deck;
-}
-
-renderNewShuffledDeck();
 
 /*
 
@@ -86,7 +33,10 @@ Initialize deck and shuffle it
 
     I think it would be easier to represent A, J, Q, and K as 1, 11, 12, and 13 respectively, then translate them to CSS cards in the render function, rather than translate the letters in the control
 
-Deal cards to tableaus 1-7
+Deal 28 cards to the hiddenCards array
+Deal the remaining 24 cards to the stockpile
+Initialize the tableau arrays as completely filled with "?" to symbolize hidden cards
+  If I wanna get fancy, I could set up a for iterator loop, filling each tableau with i "?"s
 
 Set aside remaining deck into the stockpile
 
@@ -106,11 +56,14 @@ If it is clicked again, the highlight is removed and the card is deselected
 
 When a second card is clicked, it is checked for legality
 
-If the second card clicked is not hidden and:
-  •The value of the selected card +1 AND an opposite suit color, the selected card and all cards below it are moved below that card
-  •An empty tableau column AND the selected card is a king, it is moved to that column
-  •An ace pile and the selected card is the ace pile's suit and value + 1, it is moved to the ace pile
-  •
+LEGAL MOVES: 
+  • A non-ace card from the tableau to another tableau column, of which the top card is an opposite suit +1 
+  • A king from the tableau or wastepile to an empty tableau column
+  • A card from the bottom of a column to its respective ace pile -1
+  • A non-ace card at the top of an ace pile to a tableau column, of which the top card is an opposite suit +1
+  • A non-ace top card of the waste pile
+  • An ace from the top of the waste pile to its respective empty ace pile
+  • An ace from the tableau to its respective empty ace pile
 
 If the top card of a tableau is hidden, reveal it
 Deal all cards as hidden, then reveal the last index of each, keeping track of which cards are hidden by some other measure
@@ -118,6 +71,12 @@ Maybe set aside a separate array of remaining cards, replacing the top "?"s in t
 something like, if the top index of this array is a ?, replace it with a card from the hiddenCards array.
 
 
+At the end of every move function, increment the move counter by 1 and check for a winner,
+if all ace piles have 13 as the top card, the player wins and is prompted to play again.
+
+When rendering:
+  If the top card of any tableau is a "?", then move a card from hiddenCards to that slot
+  If a card is "?", then represent it with a face down card
 
 
 Icebox features:
@@ -129,3 +88,80 @@ Icebox features:
 •Rule Modifications
 •Windows 98/xp style visuals
 */
+
+
+
+
+
+
+
+
+//     /*----- constants -----*/
+// const suits = ['s', 'c', 'd', 'h'];
+// const ranks = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
+
+// // Build an 'original' deck of 'card' objects used to create shuffled decks
+// const originalDeck = buildOriginalDeck();
+// renderDeckInContainer(originalDeck, document.getElementById('original-deck-container'));
+
+// /*----- app's state (variables) -----*/
+// let shuffledDeck;
+
+// /*----- cached element references -----*/
+// const shuffledContainer = document.getElementById('shuffled-deck-container');
+
+// /*----- event listeners -----*/
+// document.querySelector('button').addEventListener('click', renderNewShuffledDeck);
+
+// /*----- functions -----*/
+// function getNewShuffledDeck() {
+//   // Create a copy of the originalDeck (leave originalDeck untouched!)
+//   const tempDeck = [...originalDeck];
+//   const newShuffledDeck = [];
+//   while (tempDeck.length) {
+//     // Get a random index for a card still in the tempDeck
+//     const rndIdx = Math.floor(Math.random() * tempDeck.length);
+//     // Note the [0] after splice - this is because splice always returns an array and we just want the card object in that array
+//     newShuffledDeck.push(tempDeck.splice(rndIdx, 1)[0]);
+//   }
+//   return newShuffledDeck;
+// }
+
+// function renderNewShuffledDeck() {
+//   // Create a copy of the originalDeck (leave originalDeck untouched!)
+//   shuffledDeck = getNewShuffledDeck();
+//   renderDeckInContainer(shuffledDeck, shuffledContainer);
+// }
+
+// function renderDeckInContainer(deck, container) {
+//   container.innerHTML = '';
+//   // Let's build the cards as a string of HTML
+//   let cardsHtml = '';
+//   deck.forEach(function(card) {
+//     cardsHtml += `<div class="card ${card.face}"></div>`;
+//   });
+//   // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup 
+//   // const cardsHtml = deck.reduce(function(html, card) {
+//   //   return html + `<div class="card ${card.face}"></div>`;
+//   // }, '');
+//   container.innerHTML = cardsHtml;
+// }
+
+// function buildOriginalDeck() {
+//   const deck = [];
+//   // Use nested forEach to generate card objects
+//   suits.forEach(function(suit) {
+//     ranks.forEach(function(rank) {
+//       deck.push({
+//         // The 'face' property maps to the library's CSS classes for cards
+//         face: `${suit}${rank}`,
+//         // Setting the 'value' property for game of blackjack, not war
+//         value: Number(rank) || (rank === 'A' ? 11 : 10)
+//       });
+//     });
+//   });
+//   return deck;
+// }
+
+// renderNewShuffledDeck();
+
