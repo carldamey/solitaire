@@ -14,10 +14,8 @@
 	/*----- functions -----*/
 
 function init() {
-  delete deck; delete tableau; delete stockpile; delete wastePile; delete acePiles
-
+  deck = []; 
   //Fill the deck array with card objects
-  deck = []
   for (let suit in SUITS) {
     for (let i = 0; i <=12; i++) {
       SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
@@ -32,7 +30,7 @@ function init() {
 acePiles = {c: 0, d: 0, h: 0, s: 0}
 
 init()
-console.log(acePiles)
+console.log(deck)
 /*
 
 Initialize deck and shuffle it
