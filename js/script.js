@@ -12,11 +12,12 @@
 
 
 	/*----- functions -----*/
+init()
 
 function init() {
   deck = [];tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = {c: 0, d: 0, h: 0, s: 0}
 
-  //Fill the deck array with card objects
+  // Fill the deck array with card objects
   for (let suit in SUITS) {
     for (let i = 0; i <=12; i++) {
       SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
@@ -24,7 +25,7 @@ function init() {
     }
   }
 
-  //Shuffle the deck
+  // Shuffle the deck
   deck.sort(() => Math.random() - .5)
 
   // Fill the tableau with hidden cards
@@ -33,9 +34,19 @@ function init() {
   }
 }
 
+function move() {
+  tableau.forEach(column => {
+    if (column[column.length - 1] === "?") {
+      const revealedCard = deck[0]
+      deck.unshift()
+      column[column.length - 1] = revealedCard
+      
+    }
+  })
+}
 
-init()
-console.log(deck)
+// TODO delete console logs when finished
+
 /*
 
 Initialize deck and shuffle it
