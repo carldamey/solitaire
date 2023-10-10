@@ -32,19 +32,27 @@ function init() {
   for (let i = 0; i <= 6; i++) {
     while (tableau[i].length < i + 1) tableau[i].push("?")
   }
+
+  // Move 24 cards to the stockpile, leaving the remaining 28 to pull from when revealing cards
+  for (let i = 0; i < 24; i++) {
+    const stockCard = deck[0]
+    deck.shift()
+    stockPile.push(stockCard)
+  }
 }
 
 function move() {
   tableau.forEach(column => {
     if (column[column.length - 1] === "?") {
       const revealedCard = deck[0]
-      deck.unshift()
+      deck.shift()
       column[column.length - 1] = revealedCard
-      
     }
+
   })
 }
 
+// TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO delete console logs when finished
 
 /*
