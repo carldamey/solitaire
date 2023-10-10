@@ -19,7 +19,9 @@ const ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 for (let suit in suits) {
   for (let i = 0; i <=12; i++) {
-    deck.push({suit: suits[suit], rank: ranks[i]})
+    let color
+    suits[suit] === "c" || suits[suit] === "s" ? color = "black" : color = "red"
+    deck.push({suit: suits[suit], rank: ranks[i], color})
   }
 }
 
