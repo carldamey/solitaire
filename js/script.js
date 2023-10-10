@@ -4,8 +4,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-const deck = []
-
+  let deck, tableau, stockpile, wastePile, acePiles
 	/*----- cached elements  -----*/
 
 
@@ -15,12 +14,12 @@ const deck = []
 	/*----- functions -----*/
 
 function init() {
-  delete deck
+  delete deck; delete tableau; delete stockpile; delete wastePile; delete acePiles
 
   //Fill the deck array with card objects
+  deck = []
   for (let suit in SUITS) {
     for (let i = 0; i <=12; i++) {
-      let color
       SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
       deck.push({suit: SUITS[suit], rank: RANKS[i], color})
     }
@@ -30,8 +29,10 @@ function init() {
   deck.sort(() => Math.random() - .5)
 }
 
+acePiles = {c: 0, d: 0, h: 0, s: 0}
+
 init()
-console.log(deck)
+console.log(acePiles)
 /*
 
 Initialize deck and shuffle it
