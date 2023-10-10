@@ -1,8 +1,10 @@
 	/*----- constants -----*/
 
+  const SUITS = ["c", "d", "h", "s"]
+  const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-
+const deck = []
 
 	/*----- cached elements  -----*/
 
@@ -12,23 +14,24 @@
 
 	/*----- functions -----*/
 
-const deck = []
-const suits = ["c", "d", "h", "s"]
-const ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+function init() {
+  delete deck
 
-
-for (let suit in suits) {
-  for (let i = 0; i <=12; i++) {
-    let color
-    suits[suit] === "c" || suits[suit] === "s" ? color = "black" : color = "red"
-    deck.push({suit: suits[suit], rank: ranks[i], color})
+  //Fill the deck array with card objects
+  for (let suit in SUITS) {
+    for (let i = 0; i <=12; i++) {
+      let color
+      SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
+      deck.push({suit: SUITS[suit], rank: RANKS[i], color})
+    }
   }
+
+  //Shuffle the deck
+  deck.sort(() => Math.random() - .5)
 }
 
+init()
 console.log(deck)
-
-
-
 /*
 
 Initialize deck and shuffle it
