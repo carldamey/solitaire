@@ -52,24 +52,30 @@ function move() {
   })
 }
 
+function draw() {
+  if (stockPile.length >= 3) {
+    for (let i = 1; i <= 3; i++) {
+      const drawingCard =  stockPile[0]
+      stockPile.shift()
+      wastePile.unshift(drawingCard)
+    } 
+  } else if (stockPile.length > 0) {
+    stockPile.forEach(card => {
+      stockPile.shift()
+      wastePile.unshift(card)
+    })
+  } else if (stockPile.length === 0) {
+    stockPile = [...wastePile].reverse()
+    wastePile = []
+  }
+
+}
+
+// TODO clean formatting and remove vestigial comments
 // TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO delete console logs when finished
 
 /*
-
-Initialize deck and shuffle it
-
-    I think it would be easier to represent A, J, Q, and K as 1, 11, 12, and 13 respectively, then translate them to CSS cards in the render function, rather than translate the letters in the control
-
-Deal 28 cards to the hiddenCards array
-Deal the remaining 24 cards to the stockpile
-Initialize the tableau arrays as completely filled with "?" to symbolize hidden cards
-  If I wanna get fancy, I could set up a for iterator loop, filling each tableau with i "?"s
-
-Set aside remaining deck into the stockpile
-
-        How do I want to implement hiding cards?
-
 
 
 When the stockpile is clicked, the top 3 cards are placed onto the waste pile, if there are fewer than 3 cards in the stockpile, add the last card to the stockpile
