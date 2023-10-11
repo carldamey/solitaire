@@ -6,7 +6,7 @@
 	/*----- state variables -----*/
   let deck, tableau, stockPile, wastePile, acePiles
 	/*----- cached elements  -----*/
-
+  cardsDiv = document.getElementById("cards")
 
 	/*----- event listeners -----*/
 
@@ -22,6 +22,9 @@ function init() {
     for (let i = 0; i <=12; i++) {
       SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
       deck.push({suit: SUITS[suit], rank: RANKS[i], color,})
+      const cardEl = document.createElement("div")
+      cardEl.classList.add("card", "xlarge", `${SUITS[suit]}${RANKS[i]}`)
+      cardsDiv.appendChild(cardEl)
     }
   }
 
