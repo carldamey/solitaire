@@ -315,8 +315,9 @@
 
 .card.back-blue {
   background-image: url("../images/backs/blue.svg"); }
-
-.card.back-red {
+  
+.card.back-red,
+.xx {
   background-image: url("../images/backs/red.svg"); }
 
 /* Re-orients the cards for different directions. While

@@ -6,7 +6,9 @@
 	/*----- state variables -----*/
   let deck, tableau, stockPile, wastePile, acePiles
 	/*----- cached elements  -----*/
-  cardsDiv = document.getElementById("cards")
+  const cardsDiv = document.getElementById("cards")
+  const tableauDiv = document.getElementById("tableau")
+  const columnDivArr = [document.getElementById("col0"), document.getElementById("col1"), document.getElementById("col2"), document.getElementById("col3"), document.getElementById("col4"), document.getElementById("col5"), document.getElementById("col6"),]
 
 	/*----- event listeners -----*/
 
@@ -34,7 +36,7 @@ function init() {
 
   // Fill the tableau with hidden cards
   for (let i = 0; i <= 6; i++) {
-    while (tableau[i].length < i + 1) tableau[i].push("?")
+    while (tableau[i].length < i + 1) tableau[i].push("xx")
   }
 
   // Move 24 cards to the stockpile, leaving the remaining 28 to pull from when revealing cards
@@ -47,7 +49,7 @@ function init() {
 
 function move() {
   tableau.forEach(column => {
-    if (column[column.length - 1] === "?") {
+    if (column[column.length - 1] === "xx") {
       const revealedCard = deck[0]
       deck.shift()
       column[column.length - 1] = revealedCard
@@ -75,6 +77,18 @@ function draw() {
 
 }
 
+function render() {
+  columnDivArr.forEach(columnDiv => columnDiv.innerHTML = "")
+  tableau.forEach(column => {
+    column.forEach(card => {
+      const newCardEl = document.createElement("div")
+      newCardEl.classList.add("card", "xlarge", `${card.suit}${card.rank}`)
+      console.log(card)
+    })
+  })
+}
+
+// TODO remove cards div if unused
 // TODO fonts
 // TODO gradients everywhere
 // TODO fix bug with stock and waste pile lengths 
