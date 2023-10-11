@@ -22,6 +22,7 @@ function init() {
     for (let i = 0; i <=12; i++) {
       SUITS[suit] === "c" || SUITS[suit] === "s" ? color = "black" : color = "red"
       deck.push({suit: SUITS[suit], rank: RANKS[i], color,})
+      // Add card element to the DOM
       const cardEl = document.createElement("div")
       cardEl.classList.add("card", "xlarge", `${SUITS[suit]}${RANKS[i]}`)
       cardsDiv.appendChild(cardEl)

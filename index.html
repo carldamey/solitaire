@@ -4,14 +4,29 @@
   <meta charset="utf-8">
   <title>Solitaire</title>
   <link rel="stylesheet" href="/css/card-starter-master/dist/css/cardstarter.css">
+  <link rel="stylesheet" href="/css/style.css">
   <script defer src="./js/script.js"></script>
 </head>
 
 <body>
-  <div id="cards">
+  <div id="menu-bar">
+    <span id="moves">MOVES:</span>
+    <span id="timer">TIME:</span>
+    <button>RESET</button>
+  </div>
+  <div id="ace-piles"></div>
+  <div id="tableau">
+    <div class="column" id="col0"></div>
+    <div class="column" id="col1"></div>
+    <div class="column" id="col2"><div class="card xlarge h7"></div></div>
+    <div class="column" id="col3"></div>
+    <div class="column" id="col4"></div>
+    <div class="column" id="col5"></div>
+    <div class="column" id="col6"></div>
+  </div>
+  <div id="cards" hidden>
   </div>
 </body>
 </html>
 
 
-// s
