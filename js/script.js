@@ -75,7 +75,8 @@ function draw() {
 
 }
 
-
+// TODO fonts
+// TODO gradients everywhere
 // TODO fix bug with stock and waste pile lengths 
 // TODO clean formatting and remove vestigial comments
 // TODO consider moving card reveal to its own function instead of being expressed in move function
