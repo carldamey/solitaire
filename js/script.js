@@ -36,7 +36,7 @@ function init() {
 
   // Fill the tableau with hidden cards
   for (let i = 0; i <= 6; i++) {
-    while (tableau[i].length < i + 1) tableau[i].push("xx")
+    while (tableau[i].length < i + 1) tableau[i].push({suit: "x", rank: "x"})
   }
 
   // Move 24 cards to the stockpile, leaving the remaining 28 to pull from when revealing cards
@@ -49,7 +49,7 @@ function init() {
 
 function move() {
   tableau.forEach(column => {
-    if (column[column.length - 1] === "xx") {
+    if (column[column.length - 1].suit === "x") {
       const revealedCard = deck[0]
       deck.shift()
       column[column.length - 1] = revealedCard
@@ -82,19 +82,28 @@ function render() {
   tableau.forEach(column => {
     column.forEach(card => {
       const newCardEl = document.createElement("div")
-      newCardEl.classList.add("card", "xlarge", `${card.suit}${card.rank}`)
-      console.log(card)
+      newCardEl.classList.add("card", "large", `${card.suit}${card.rank}`)
+      columnDivArr[tableau.indexOf(column)].appendChild(newCardEl)
     })
   })
 }
 
+
+// TODO win conditions
 // TODO remove cards div if unused
-// TODO fonts
-// TODO gradients everywhere
-// TODO fix bug with stock and waste pile lengths 
+// TODO fix bug with stock and waste pile lengths
 // TODO clean formatting and remove vestigial comments
-// TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO delete console logs when finished
+// TODO update README.md (keep original pitch)
+// TODO change hidden cards from "?" to an object with s
+// TODO check that project meets tech specs
+
+// TODO fonts + fallback
+// TODO gradients everywhere (including moz and fallback color)
+// TODO consider moving card reveal to its own function instead of being expressed in move function
+// TODO change card size according to screen size
+
+
 
 /*
 
