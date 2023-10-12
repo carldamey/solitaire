@@ -23,7 +23,6 @@ init()
 
 function init() {
   deck = []; tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = [[], [], [], [],]
-
   // Fill the deck array with card objects
   for (let suit in SUITS) {
     for (let i = 0; i <=12; i++) {
@@ -35,15 +34,12 @@ function init() {
       cardsDiv.appendChild(cardEl)
     }
   }
-
   // Shuffle the deck
   deck.sort(() => Math.random() - .5)
-
   // Fill the tableau with hidden cards
   for (let i = 0; i <= 6; i++) {
     while (tableau[i].length < i + 1) tableau[i].push({suit: "x", rank: "x"})
   }
-
   // Move 24 cards to the stockpile, leaving the remaining 28 to pull from when revealing cards
   for (let i = 0; i < 24; i++) {
     const stockCard = deck[0]
@@ -53,6 +49,7 @@ function init() {
   revealCards()
   render()
 }
+
 function revealCards() {
   tableau.forEach(column => {
     if (column[column.length - 1].suit === "x") {
@@ -61,16 +58,6 @@ function revealCards() {
       column[column.length - 1] = revealedCard
     }
   })
-}
-
-function move() {
-  if (selectedCard === targetCard) return
-  else if (selectedLocation === tableau) {
-    if (selectedCard.rank > 1 && selectedCard.color !== targetCard.color && targetCard.rank === selectedCard.rank + 1) {
-      tableau[selectedColIdx].push(selectedCard)
-    }
-  }
-  
 }
 
 function draw() {
@@ -92,14 +79,31 @@ function draw() {
   render()
 }
 
+function move() {
+  if (selectedCard !== targetCard) {
+    if (selectedLocation === tableau) {
+      //if opposite color and rank -1 and not an ace
+      //else if king to empty space
+      //else if card to ace pile
+    } else if (selectedLocation === acePiles) {
+      //ace to other blank column
+      //non ace to tableau
+    } else if (selectedLocation === wastePile) {
+      //non ace to tableau
+      //ace to ace pile
+      //king to blank column
+    }
+  }
+  
+}
+
 function selectCard(event) {
   // Identify which arrays cards are being interacted with from
   if (event.target.parentNode.parentNode.id === "tableau") {
     selectedLocation = tableau
     selectedColIdx = event.target.parentNode.id[event.target.parentNode.id.length -1]
-    console.log(selectedColIdx)
   }
-  if (selectedLocationId === "ace-piles") selectedLocation = acePiles
+  if (selectedLocation === "ace-piles") selectedLocation = acePiles
   else if (event.target.id === "waste-pile") selectedLocation = wastePile
   console.log(selectedLocation)
 
@@ -169,6 +173,8 @@ function render() {
 // TODO clean css outlines
 // TODO implement reset button
 
+
+
 // TODO add rules page link to top bar
 // TODO give outline to empty tableau columns
 // TODO add ability to see top 3 waste pile cards
@@ -182,7 +188,8 @@ function render() {
 // TODO add rules
 // TODO add sound
 // TODO add score, the amount of moves multiplied by something like 30 minutes minus the games time, capping out at 0, input high scores with mongoDB later on
-
+// TODO make hover only gray and select glow yellow
+// TODO make selections flash red if invalid
 
 /*
 
