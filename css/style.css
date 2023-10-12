@@ -24,23 +24,33 @@ body {
     height: 20vmin;
 }
 
+.ace-pile {
+    margin: 3vmin, 3vmin, 0;
+}
+
 #tableau {
     display: flex;
     /* height: 60vmin; */
     justify-content: space-evenly;
 }
 
+#draw-piles {
+    display: flex;
+}
+
 .column {
     display: flex;
     flex-direction: column;
     border-color: blueviolet;
+    margin-top: 5vmin;
 }
 
-.card {
-    margin-top: -70%;
+.column > .card {
+    margin-top: -80%;
     border: .5vmin solid white;
 }
 
 .card:hover {
-    border: .5vmin solid gold;
+    border: .5vmin double gold;
+    background-color: lightgray;
 }

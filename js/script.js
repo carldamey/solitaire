@@ -9,7 +9,7 @@
   const cardsDiv = document.getElementById("cards")
   const tableauDiv = document.getElementById("tableau")
   const columnDivArr = [document.getElementById("col0"), document.getElementById("col1"), document.getElementById("col2"), document.getElementById("col3"), document.getElementById("col4"), document.getElementById("col5"), document.getElementById("col6"),]
-
+  const aceDivArr = [document.getElementById("ace0"), document.getElementById("ace1"), document.getElementById("ace2"), document.getElementById("ace3"), ]
 	/*----- event listeners -----*/
 
 
@@ -17,7 +17,7 @@
 init()
 
 function init() {
-  deck = [];tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = {c: 0, d: 0, h: 0, s: 0}
+  deck = [];tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = [[], [], [], [],]
 
   // Fill the deck array with card objects
   for (let suit in SUITS) {
@@ -45,17 +45,20 @@ function init() {
     deck.shift()
     stockPile.push(stockCard)
   }
+  revealCards()
+  render()
 }
-
-function move() {
+function revealCards() {
   tableau.forEach(column => {
     if (column[column.length - 1].suit === "x") {
       const revealedCard = deck[0]
       deck.shift()
       column[column.length - 1] = revealedCard
     }
-
   })
+}
+
+function move() {
 }
 
 function draw() {
@@ -78,6 +81,15 @@ function draw() {
 }
 
 function render() {
+  // Render Ace Piles
+  aceDivArr.forEach(aceDiv => aceDiv.innerHTML = "")
+  acePiles.forEach(acePile => {
+    const newCardEl = document.createElement("div")
+    if (acePile.length === 0) newCardEl.classList.add("card", "large", "outline")
+    else if (acePile.length > 0) newCardEl.classList.add("card", "large", `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`)
+    aceDivArr[acePiles.indexOf(acePile)].appendChild(newCardEl)
+  })
+  // Render tableau
   columnDivArr.forEach(columnDiv => columnDiv.innerHTML = "")
   tableau.forEach(column => {
     column.forEach(card => {
@@ -88,29 +100,28 @@ function render() {
   })
 }
 
-
+// TODO render ace piles
+// TODO render stock & waste piles
 // TODO win conditions
 // TODO remove cards div if unused
 // TODO fix bug with stock and waste pile lengths
 // TODO clean formatting and remove vestigial comments
 // TODO delete console logs when finished
 // TODO update README.md (keep original pitch)
-// TODO change hidden cards from "?" to an object with s
 // TODO check that project meets tech specs
+// TODO clean css outlines
+// TODO implement reset button
 
+// TODO implement move counter
+// TODO implement timer
 // TODO fonts + fallback
 // TODO gradients everywhere (including moz and fallback color)
 // TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO change card size according to screen size
-
+// TODO add rules
 
 
 /*
-
-
-
-
-
 
 If a card is clicked, it is highlighted and stored in a selectedCard variable
 If it is clicked again, the highlight is removed and the card is deselected
