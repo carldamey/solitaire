@@ -4,7 +4,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles, selectedCard
+  let deck, tableau, stockPile, wastePile, acePiles, selectedCard, targetCard, selectedLocation
 
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
@@ -12,17 +12,12 @@
   const gameDiv = document.getElementById("game")
   const columnDivArr = [document.getElementById("col0"), document.getElementById("col1"), document.getElementById("col2"), document.getElementById("col3"), document.getElementById("col4"), document.getElementById("col5"), document.getElementById("col6"),]
   const aceDivArr = [document.getElementById("ace0"), document.getElementById("ace1"), document.getElementById("ace2"), document.getElementById("ace3"),]
+  const stockPileDiv = document.getElementById("stock-pile")
+  const wastePileDiv = document.getElementById("waste-pile")
 
 	/*----- event listeners -----*/
-gameDiv.addEventListener("click", event => {
-  // Check if the card is valid for selection
-  if (event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline") && !selectedCard) {
-    const colIdx = event.target.parentNode.id[3]
-    const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
-    selectedCard = tableau[colIdx][cardIdx]
-    console.log(selectedCard)
-  }
-})
+gameDiv.addEventListener("click", event => selectCard(event))
+stockPileDiv.addEventListener("click", draw)
 
 	/*----- functions -----*/
 init()
@@ -88,7 +83,24 @@ function draw() {
     stockPile = [...wastePile].reverse()
     wastePile = []
   }
+  render()
+}
 
+function selectCard(event) {
+  selectedLocation = event.target.parentNode.parentNode.id
+  console.log(selectedLocation)
+  // Check if the card is valid for selection
+  if (!selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline")) {
+    const colIdx = event.target.parentNode.id[3]
+    const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
+    selectedCard = tableau[colIdx][cardIdx]
+  } else if (selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx")) {
+    const colIdx = event.target.parentNode.id[3]
+    const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
+    targetCard = tableau[colIdx][cardIdx]
+    //check the locations of both target and selected, tableau, waste pile, ace pile, etc, maybe store in a variable for simplicity
+  }
+  // console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
 }
 
 function render() {
@@ -109,7 +121,19 @@ function render() {
       columnDivArr[tableau.indexOf(column)].appendChild(newCardEl)
     })
   })
+  // Render Stock Pile
+  stockPileDiv.classList.remove("outline", "xx")
+  if (stockPile.length === 0) stockPileDiv.classList.add("outline")
+  else if (stockPile.length > 0) stockPileDiv.classList.add("xx")
+
+  // Render Waste Pile
+  
+  wastePileDiv.className = "card xlarge"
+  if (wastePile.length === 0) wastePileDiv.classList.add("outline")
+  else if (wastePile.length > 0) wastePileDiv.classList.add(`${wastePile[0].suit}${wastePile[0].rank}`)
 }
+
+
 
 // TODO render ace piles
 // TODO render stock & waste piles
@@ -123,6 +147,8 @@ function render() {
 // TODO clean css outlines
 // TODO implement reset button
 
+// TODO add ability to see top 3 waste pile cards
+// TODO change anon. function from card selection to named function
 // TODO implement move counter
 // TODO implement timer
 // TODO fonts + fallback
