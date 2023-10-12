@@ -22,6 +22,7 @@ body {
 #ace-piles {
     display: flex;
     height: 20vmin;
+    justify-content: space-evenly;
 }
 
 .ace-pile {
@@ -47,6 +48,10 @@ body {
 
 .column > .card {
     margin-top: -80%;
+    border: .5vmin solid #dedede;
+}
+
+.card.xx {
     border: .5vmin solid white;
 }
 

@@ -1,10 +1,9 @@
 	/*----- constants -----*/
-
   const SUITS = ["c", "d", "h", "s"]
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles, selectedCard, targetCard, selectedLocation
+  let deck, tableau, stockPile, wastePile, acePiles, selectedCard, targetCard, selectedLocation, selectedColIdx
 
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
@@ -23,7 +22,7 @@ stockPileDiv.addEventListener("click", draw)
 init()
 
 function init() {
-  deck = [];tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = [[], [], [], [],]
+  deck = []; tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = [[], [], [], [],]
 
   // Fill the deck array with card objects
   for (let suit in SUITS) {
@@ -65,6 +64,13 @@ function revealCards() {
 }
 
 function move() {
+  if (selectedCard === targetCard) return
+  else if (selectedLocation === tableau) {
+    if (selectedCard.rank > 1 && selectedCard.color !== targetCard.color && targetCard.rank === selectedCard.rank + 1) {
+      tableau[selectedColIdx].push(selectedCard)
+    }
+  }
+  
 }
 
 function draw() {
@@ -87,20 +93,34 @@ function draw() {
 }
 
 function selectCard(event) {
-  selectedLocation = event.target.parentNode.parentNode.id
+  // Identify which arrays cards are being interacted with from
+  if (event.target.parentNode.parentNode.id === "tableau") {
+    selectedLocation = tableau
+    selectedColIdx = event.target.parentNode.id[event.target.parentNode.id.length -1]
+    console.log(selectedColIdx)
+  }
+  if (selectedLocationId === "ace-piles") selectedLocation = acePiles
+  else if (event.target.id === "waste-pile") selectedLocation = wastePile
   console.log(selectedLocation)
+
+
+
+
   // Check if the card is valid for selection
   if (!selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline")) {
     const colIdx = event.target.parentNode.id[3]
     const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
-    selectedCard = tableau[colIdx][cardIdx]
+    selectedCard = selectedLocation[colIdx][cardIdx]
+
+
+
   } else if (selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx")) {
     const colIdx = event.target.parentNode.id[3]
     const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
-    targetCard = tableau[colIdx][cardIdx]
+    targetCard = selectedLocation[colIdx][cardIdx]
     //check the locations of both target and selected, tableau, waste pile, ace pile, etc, maybe store in a variable for simplicity
   }
-  // console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
+  console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
 }
 
 function render() {
@@ -127,7 +147,6 @@ function render() {
   else if (stockPile.length > 0) stockPileDiv.classList.add("xx")
 
   // Render Waste Pile
-  
   wastePileDiv.className = "card xlarge"
   if (wastePile.length === 0) wastePileDiv.classList.add("outline")
   else if (wastePile.length > 0) wastePileDiv.classList.add(`${wastePile[0].suit}${wastePile[0].rank}`)
@@ -135,9 +154,12 @@ function render() {
 
 
 
-// TODO render ace piles
-// TODO render stock & waste piles
-// TODO win conditions
+// TODO king transfer
+// TODO card transfer 
+// TODO recursive card transfer
+// TODO ace pile functionality
+// TODO ace swap locations
+// TODO win condition
 // TODO remove cards div if unused
 // TODO fix bug with stock and waste pile lengths
 // TODO clean formatting and remove vestigial comments
@@ -147,6 +169,8 @@ function render() {
 // TODO clean css outlines
 // TODO implement reset button
 
+// TODO add rules page link to top bar
+// TODO give outline to empty tableau columns
 // TODO add ability to see top 3 waste pile cards
 // TODO change anon. function from card selection to named function
 // TODO implement move counter
@@ -156,6 +180,8 @@ function render() {
 // TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO change card size according to screen size
 // TODO add rules
+// TODO add sound
+// TODO add score, the amount of moves multiplied by something like 30 minutes minus the games time, capping out at 0, input high scores with mongoDB later on
 
 
 /*
