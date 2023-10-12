@@ -4,14 +4,22 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles
+  let deck, tableau, stockPile, wastePile, acePiles, selectedCard
+
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
   const tableauDiv = document.getElementById("tableau")
+  const gameDiv = document.getElementById("game")
   const columnDivArr = [document.getElementById("col0"), document.getElementById("col1"), document.getElementById("col2"), document.getElementById("col3"), document.getElementById("col4"), document.getElementById("col5"), document.getElementById("col6"),]
-  const aceDivArr = [document.getElementById("ace0"), document.getElementById("ace1"), document.getElementById("ace2"), document.getElementById("ace3"), ]
-	/*----- event listeners -----*/
+  const aceDivArr = [document.getElementById("ace0"), document.getElementById("ace1"), document.getElementById("ace2"), document.getElementById("ace3"),]
 
+	/*----- event listeners -----*/
+gameDiv.addEventListener("click", event => {
+  // Check if the card is valid for selection
+  if (event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline") && !selectedCard) {
+
+  }
+})
 
 	/*----- functions -----*/
 init()
