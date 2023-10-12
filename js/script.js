@@ -17,7 +17,10 @@
 gameDiv.addEventListener("click", event => {
   // Check if the card is valid for selection
   if (event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline") && !selectedCard) {
-
+    const colIdx = event.target.parentNode.id[3]
+    const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
+    selectedCard = tableau[colIdx][cardIdx]
+    console.log(selectedCard)
   }
 })
 
