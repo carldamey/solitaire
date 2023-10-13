@@ -91,8 +91,7 @@ function move(selectedCard, targetCard) {
       }
       //else if king to empty space
       //else if card to ace pile
-      if (targetCard.location === acePiles && (targetCard.rank === selectedCard.rank +1 && targetCard.suit === selectedCard.suit) || (acePiles[targetCard.arrIdx].length === 0 && selectedCard.rank === 1) ) {
-        console.log("this would work")
+      else if (targetCard.location === acePiles && (acePiles[targetCard.arrIdx].length === 0 && selectedCard.rank === 1) || (targetCard.rank === selectedCard.rank - 1 && targetCard.suit === selectedCard.suit)){
         acePiles[targetCard.arrIdx].push(tableau[selectedCard.arrIdx][selectedCard.cardIdx])
         tableau[selectedCard.arrIdx].pop()
 
@@ -102,7 +101,16 @@ function move(selectedCard, targetCard) {
       //non ace to tableau
     } else if (selectedCard.location === wastePile) {
       //non ace to tableau
-      //ace to ace pile
+      if (wastePile[0].rank > 1 && targetCard.location === tableau && targetCard.rank === wastePile[0].rank + 1 && targetCard.color !== wastePile[0].color) {
+        tableau[targetCard.arrIdx].push(wastePile[0])
+        wastePile.shift()
+      }
+      //to ace pile
+      else if (targetCard.location === acePiles && (wastePile[0].rank === 1 && acePiles[targetCard.arrIdx].length === 0) || (targetCard.rank === wastePile[0].rank - 1 && targetCard.suit === wastePile[0].suit)) {
+        console.log("waste to ace", selectedCard, targetCard)
+        acePiles[targetCard.arrIdx].push(wastePile[0])
+        wastePile.shift()
+      }
       //king to blank column
     }
   }
@@ -175,11 +183,12 @@ function render() {
     newCardEl.classList.add("card", "large", `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`)
     newCardEl.id = `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`
 }
+    console.log(acePile)
     aceDivArr[acePiles.indexOf(acePile)].appendChild(newCardEl)
   })
   // Render tableau
   columnDivArr.forEach(columnDiv => columnDiv.innerHTML = "")
-  tableau.forEach(column => {
+  tableau.forEach(column => { // TODO if column empty give outline class else give suit rank class
     column.forEach(card => {
       const newCardEl = document.createElement("div")
       newCardEl.classList.add("card", "large", `${card.suit}${card.rank}`)
@@ -200,22 +209,22 @@ function render() {
 }
 
 
-// TODO figure out royal rank from id issue
+
 // TODO king transfer
-// TODO card transfer 
-// TODO recursive card transfer
 // TODO ace pile functionality
 // TODO ace swap locations
 // TODO win condition
-// TODO remove cards div if unused
 // TODO fix bug with stock and waste pile lengths
-// TODO clean formatting and remove vestigial comments
-// TODO delete console logs when finished
 // TODO update README.md (keep original pitch)
 // TODO check that project meets tech specs
 // TODO clean css outlines
 // TODO implement reset button
 // TODO change comparison for selected and target card in move function, they're reference types
+
+// TODO clean formatting and remove vestigial comments
+// TODO delete console logs when finished
+// TODO remove cards div if unused
+
 
 
 // TODO add rules page link to top bar
