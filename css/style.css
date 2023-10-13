@@ -48,6 +48,9 @@ body {
 
 .column > .card {
     margin-top: -80%;
+}
+
+.column > .card:not(.outline) {
     border: .5vmin solid #dedede;
 }
 

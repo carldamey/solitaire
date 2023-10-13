@@ -189,10 +189,13 @@ function render() {
   // Render tableau
   columnDivArr.forEach(columnDiv => columnDiv.innerHTML = "")
   tableau.forEach(column => { // TODO if column empty give outline class else give suit rank class
-    column.forEach(card => {
+    if (column.length === 0) {
+      const newCardEl = document.createElement("div")
+      newCardEl.classList.add("card", "large", "outline")
+      columnDivArr[tableau.indexOf(column)].appendChild(newCardEl)
+    } else column.forEach(card => {
       const newCardEl = document.createElement("div")
       newCardEl.classList.add("card", "large", `${card.suit}${card.rank}`)
-      if (column.length === 0) newCardEl.classList.add("outline")
       newCardEl.id = `${card.suit}${card.rank}`
       columnDivArr[tableau.indexOf(column)].appendChild(newCardEl)
     })
