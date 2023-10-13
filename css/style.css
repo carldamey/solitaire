@@ -11,6 +11,16 @@ body {
     padding: 0;
 }
 
+h1 {
+    background-color: black;
+    border: 1vmin solid white;
+    width: 100%;
+    margin: 0 auto;
+    margin-left: 50%;
+    padding: 10vmin;
+    justify-self: center
+;}
+
 #game {
     display: flex;
     flex-direction: column;
