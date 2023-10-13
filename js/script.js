@@ -3,7 +3,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles, selectedCard, targetCard, selectedLocation, selectedColIdx
+  let deck, tableau, stockPile, wastePile, acePiles, selectedCard, targetCard, selectedLocation, selectedArrIdx
 
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
@@ -30,8 +30,8 @@ function init() {
       deck.push({suit: SUITS[suit], rank: RANKS[i], color,})
       // Add card element to the DOM
       const cardEl = document.createElement("div")
-      cardEl.classList.add("card", "xlarge", `${SUITS[suit]}${RANKS[i]}`)
-      cardsDiv.appendChild(cardEl)
+      // cardEl.classList.add("card", "xlarge", `${SUITS[suit]}${RANKS[i]}`)
+      // cardsDiv.appendChild(cardEl)
     }
   }
   // Shuffle the deck
@@ -52,7 +52,7 @@ function init() {
 
 function revealCards() {
   tableau.forEach(column => {
-    if (column[column.length - 1].suit === "x") {
+    if (column.length > 0 && column[column.length - 1].suit === "x") {
       const revealedCard = deck[0]
       deck.shift()
       column[column.length - 1] = revealedCard
@@ -79,53 +79,82 @@ function draw() {
   render()
 }
 
-function move() {
+function move(selectedCard, targetCard) {
   if (selectedCard !== targetCard) {
-    if (selectedLocation === tableau) {
+    console.log("not same card")
+    if (selectedCard.location === tableau) {
+      console.log("selected from tableau")
       //if opposite color and rank -1 and not an ace
+      if (selectedCard.rank > 1 && selectedCard.color !== targetCard.color && selectedCard.rank === targetCard.rank -1) {
+        console.log("valid tableau movement")
+        tableau[targetCard.arrIdx] = [...tableau[targetCard.arrIdx], tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx)]
+      }
       //else if king to empty space
       //else if card to ace pile
-    } else if (selectedLocation === acePiles) {
+    } else if (selectedCard.location === acePiles) {
       //ace to other blank column
       //non ace to tableau
-    } else if (selectedLocation === wastePile) {
+    } else if (selectedCard.location === wastePile) {
       //non ace to tableau
       //ace to ace pile
       //king to blank column
     }
   }
-  
+  selectedCard = null
+  targetCard = null
+  revealCards()
+  render()
 }
 
 function selectCard(event) {
   // Identify which arrays cards are being interacted with from
   if (event.target.parentNode.parentNode.id === "tableau") {
     selectedLocation = tableau
-    selectedColIdx = event.target.parentNode.id[event.target.parentNode.id.length -1]
+    arrIdx = event.target.parentNode.id[3]
   }
-  if (selectedLocation === "ace-piles") selectedLocation = acePiles
-  else if (event.target.id === "waste-pile") selectedLocation = wastePile
+  if (selectedLocation === "ace-piles") {
+    selectedLocation = acePiles
+    arrIdx = event.target.parentNode.id[3]
+  }
+  else if (event.target.id === "waste-pile") {
+    arrIdx = 0
+    selectedLocation = wastePile
+  }
   console.log(selectedLocation)
 
+  if (!selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline") && event.target.id !== "stock-pile") {
+    selectedCard = {
+      location: selectedLocation,
+      arrIdx: event.target.parentNode.id[3],
+      cardIdx: Array.from(event.target.parentNode.children).indexOf(event.target),
+      suit: event.target.id[0],
+      rank: parseInt(event.target.id[1]),
+    }
+    if (selectedCard.suit === "c" || selectedCard.suit === "s") selectedCard.color = "black"
+    else selectedCard.color = "red"
+  } else if (selectedCard && !targetCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.parentNode.classList.contains("draw-piles")) {
+    targetCard = {
+      location: selectedLocation,
+      arrIdx: event.target.parentNode.id[3],
+      cardIdx: Array.from(event.target.parentNode.children).indexOf(event.target),
+      suit: event.target.id[0],
+      rank: parseInt(event.target.id[1]),
+    }
+    if (selectedCard.suit === "c" || selectedCard.suit === "s") selectedCard.color = "black"
+    else selectedCard.color = "red"
+  }
+  if (selectedCard && targetCard) move(selectedCard, targetCard)
 
 
 
-  // Check if the card is valid for selection
-  if (!selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline")) {
-    const colIdx = event.target.parentNode.id[3]
-    const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
-    selectedCard = selectedLocation[colIdx][cardIdx]
-
-
-
-  } else if (selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx")) {
-    const colIdx = event.target.parentNode.id[3]
-    const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
-    targetCard = selectedLocation[colIdx][cardIdx]
+  // } else if (selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx")) {
+  //   const arrIdx = event.target.parentNode.id[3]
+  //   const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
+  //   targetCard = selectedLocation[arrIdx][cardIdx]
     //check the locations of both target and selected, tableau, waste pile, ace pile, etc, maybe store in a variable for simplicity
   }
-  console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
-}
+  // console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
+// }
 
 function render() {
   // Render Ace Piles
@@ -133,7 +162,10 @@ function render() {
   acePiles.forEach(acePile => {
     const newCardEl = document.createElement("div")
     if (acePile.length === 0) newCardEl.classList.add("card", "large", "outline")
-    else if (acePile.length > 0) newCardEl.classList.add("card", "large", `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`)
+    else if (acePile.length > 0) {
+    newCardEl.classList.add("card", "large", `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`)
+    newCardEl.id = `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`
+}
     aceDivArr[acePiles.indexOf(acePile)].appendChild(newCardEl)
   })
   // Render tableau
@@ -142,6 +174,8 @@ function render() {
     column.forEach(card => {
       const newCardEl = document.createElement("div")
       newCardEl.classList.add("card", "large", `${card.suit}${card.rank}`)
+      if (column.length === 0) newCardEl.classList.add("outline")
+      newCardEl.id = `${card.suit}${card.rank}`
       columnDivArr[tableau.indexOf(column)].appendChild(newCardEl)
     })
   })
@@ -157,7 +191,7 @@ function render() {
 }
 
 
-
+// TODO figure out royal rank from id issue
 // TODO king transfer
 // TODO card transfer 
 // TODO recursive card transfer
@@ -172,7 +206,7 @@ function render() {
 // TODO check that project meets tech specs
 // TODO clean css outlines
 // TODO implement reset button
-
+// TODO change comparison for selected and target card in move function, they're reference types
 
 
 // TODO add rules page link to top bar
