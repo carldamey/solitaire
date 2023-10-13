@@ -8,6 +8,13 @@ body {
     padding: 0;
 }
 
+#game {
+    display: flex;
+    flex-direction: column;
+    width: 1080px;
+    margin: 0 auto;
+}
+
 #menu-bar {
     display: flex;
     justify-content: space-around;
@@ -28,16 +35,18 @@ body {
 
 .ace-pile {
     margin: 3vmin, 3vmin, 0;
+    
 }
 
 #tableau {
     display: flex;
-    /* height: 60vmin; */
     justify-content: space-evenly;
 }
 
 #draw-piles {
     display: flex;
+    align-self: baseline;
+    margin: 5vmin
 }
 
 .column {
@@ -56,6 +65,10 @@ body {
 
 .card.xx {
     border: .5vmin solid white;
+}
+
+.ace-pile > .card:not(.outline) {
+    border: .5vmin solid #dedede;
 }
 
 .card:hover:not(.xx) {

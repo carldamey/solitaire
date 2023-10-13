@@ -3,7 +3,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles, selectedLocation, selectedArrIdx, selectedCard, targetCard
+  let deck, tableau, stockPile, wastePile, acePiles, selectedLocation, selectedCard, targetCard, winState
 
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
@@ -13,15 +13,18 @@
   const aceDivArr = [document.getElementById("ace0"), document.getElementById("ace1"), document.getElementById("ace2"), document.getElementById("ace3"),]
   const stockPileDiv = document.getElementById("stock-pile")
   const wastePileDiv = document.getElementById("waste-pile")
+  const resetButton = document.getElementById("reset-button")
 
 	/*----- event listeners -----*/
 gameDiv.addEventListener("click", event => selectCard(event))
 stockPileDiv.addEventListener("click", draw)
+resetButton.addEventListener("click", init)
 
 	/*----- functions -----*/
 init()
 
 function init() {
+  winstate = false
   deck = []; tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = [[], [], [], [],]
   // Fill the deck array with card objects
   for (let suit in SUITS) {
@@ -30,8 +33,6 @@ function init() {
       deck.push({suit: SUITS[suit], rank: RANKS[i], color,})
       // Add card element to the DOM
       const cardEl = document.createElement("div")
-      // cardEl.classList.add("card", "xlarge", `${SUITS[suit]}${RANKS[i]}`)
-      // cardsDiv.appendChild(cardEl)
     }
   }
   // Shuffle the deck
@@ -83,39 +84,54 @@ function move(selectedCard, targetCard) {
   if (selectedCard !== targetCard) {
     console.log("not same card")
     if (selectedCard.location === tableau) {
-      console.log("selected from tableau")
-      //if opposite color and rank -1 and not an ace
+      // Stack from Tableau to Tableau
+      console.log(selectedCard.color, targetCard.color)
       if (selectedCard.rank > 1 && selectedCard.color !== targetCard.color && selectedCard.rank === targetCard.rank -1) {
-        console.log("valid tableau movement")
         tableau[targetCard.arrIdx].push(...tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx))
       }
-      //else if king to empty space
-      //else if card to ace pile
+      // King from Tableau to Empty Column
+      else if (selectedCard.rank === 13 && tableau[targetCard.arrIdx].length === 0) {
+        console.log("tab king move")
+        tableau[targetCard.arrIdx].push(...tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx))
+      }
+      // Card from Tableau to Ace Pile
       else if (targetCard.location === acePiles && (acePiles[targetCard.arrIdx].length === 0 && selectedCard.rank === 1) || (targetCard.rank === selectedCard.rank - 1 && targetCard.suit === selectedCard.suit)){
         acePiles[targetCard.arrIdx].push(tableau[selectedCard.arrIdx][selectedCard.cardIdx])
         tableau[selectedCard.arrIdx].pop()
 
       }
     } else if (selectedCard.location === acePiles) {
-      //ace to other blank column
-      //non ace to tableau
+      // Ace from Ace Pile to Blank Ace Pile
+      if (selectedCard.rank === 1 && acePiles[targetCard.arrIdx].length === 0) {
+        acePiles[targetCard.arrIdx].push(acePiles[selectedCard.arrIdx][0])
+        acePiles[selectedCard.arrIdx].pop()
+      }
+       // Non-Ace from Ace Pile to Tableau
+      else if (selectedCard.rank > 1 && targetCard.location === tableau && selectedCard.color !== targetCard.color && selectedCard.rank === targetCard.rank - 1) {
+        tableau[targetCard.arrIdx].push(acePiles[selectedCard.arrIdx][acePiles[selectedCard.arrIdx].length - 1])
+        acePiles[selectedCard.arrIdx].pop()
+      }
     } else if (selectedCard.location === wastePile) {
-      //non ace to tableau
+      // Non-Ace Card from Waste to Tableau
       if (wastePile[0].rank > 1 && targetCard.location === tableau && targetCard.rank === wastePile[0].rank + 1 && targetCard.color !== wastePile[0].color) {
         tableau[targetCard.arrIdx].push(wastePile[0])
         wastePile.shift()
       }
-      //to ace pile
+      // Card from Waste Pile to Ace Pile
       else if (targetCard.location === acePiles && (wastePile[0].rank === 1 && acePiles[targetCard.arrIdx].length === 0) || (targetCard.rank === wastePile[0].rank - 1 && targetCard.suit === wastePile[0].suit)) {
-        console.log("waste to ace", selectedCard, targetCard)
         acePiles[targetCard.arrIdx].push(wastePile[0])
         wastePile.shift()
       }
-      //king to blank column
+      // King from Waste Pile to Blank Column
+      else if (wastePile[0].rank === 13 && tableau[targetCard.arrIdx].length === 0) {
+        tableau[targetCard.arrIdx].push(wastePile[0])
+        wastePile.shift()
     }
   }
   revealCards()
   render()
+  checkWin()
+  }
 }
 
 function selectCard(event) {
@@ -152,8 +168,8 @@ function selectCard(event) {
       suit: event.target.id[0],
       rank: parseInt(event.target.id[1]),
     }
-    if (selectedCard.suit === "c" || selectedCard.suit === "s") selectedCard.color = "black"
-    else selectedCard.color = "red"
+    if (targetCard.suit === "c" || targetCard.suit === "s") targetCard.color = "black"
+    else targetCard.color = "red"
     if (event.target.id.length === 3) targetCard.rank = parseInt(event.target.id[1] + event.target.id[2])
   }
   if (selectedCard && targetCard) {
@@ -161,14 +177,6 @@ function selectCard(event) {
     selectedCard = null
     targetCard = null
   }
-
-
-
-  // } else if (selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx")) {
-  //   const arrIdx = event.target.parentNode.id[3]
-  //   const cardIdx = Array.from(event.target.parentNode.children).indexOf(event.target)
-  //   targetCard = selectedLocation[arrIdx][cardIdx]
-    //check the locations of both target and selected, tableau, waste pile, ace pile, etc, maybe store in a variable for simplicity
   }
   // console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
 // }
@@ -188,7 +196,7 @@ function render() {
   })
   // Render tableau
   columnDivArr.forEach(columnDiv => columnDiv.innerHTML = "")
-  tableau.forEach(column => { // TODO if column empty give outline class else give suit rank class
+  tableau.forEach(column => {
     if (column.length === 0) {
       const newCardEl = document.createElement("div")
       newCardEl.classList.add("card", "large", "outline")
@@ -211,27 +219,29 @@ function render() {
   else if (wastePile.length > 0) wastePileDiv.classList.add(`${wastePile[0].suit}${wastePile[0].rank}`)
 }
 
+function checkWin() {
+  if (acePiles.every(acePile => acePile.length === 13)) winState = true
+}
 
 
-// TODO king transfer
-// TODO ace pile functionality
-// TODO ace swap locations
-// TODO win condition
-// TODO fix bug with stock and waste pile lengths
-// TODO update README.md (keep original pitch)
+
 // TODO check that project meets tech specs
-// TODO clean css outlines
-// TODO implement reset button
 // TODO change comparison for selected and target card in move function, they're reference types
+// TODO win message
+// TODO highlight selection
 
 // TODO clean formatting and remove vestigial comments
 // TODO delete console logs when finished
 // TODO remove cards div if unused
+// TODO update README.md (keep original pitch)
+// TODO check indentation & formatting
+/* TODO script.js:105 Uncaught TypeError: Cannot read properties of undefined (reading 'length')
+    at move (script.js:105:66)
+    at selectCard (script.js:176:5)
+    at HTMLDivElement.<anonymous> (script.js:19:44) */
 
-
-
+// TODO ace pile css border discrepancy
 // TODO add rules page link to top bar
-// TODO give outline to empty tableau columns
 // TODO add ability to see top 3 waste pile cards
 // TODO change anon. function from card selection to named function
 // TODO implement move counter
@@ -240,7 +250,6 @@ function render() {
 // TODO gradients everywhere (including moz and fallback color)
 // TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO change card size according to screen size
-// TODO add rules
 // TODO add sound
 // TODO add score, the amount of moves multiplied by something like 30 minutes minus the games time, capping out at 0, input high scores with mongoDB later on
 // TODO make hover only gray and select glow yellow
