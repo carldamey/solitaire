@@ -3,7 +3,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles, selectedCard, targetCard, selectedLocation, selectedArrIdx
+  let deck, tableau, stockPile, wastePile, acePiles, selectedLocation, selectedArrIdx, selectedCard, targetCard
 
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
@@ -87,10 +87,16 @@ function move(selectedCard, targetCard) {
       //if opposite color and rank -1 and not an ace
       if (selectedCard.rank > 1 && selectedCard.color !== targetCard.color && selectedCard.rank === targetCard.rank -1) {
         console.log("valid tableau movement")
-        tableau[targetCard.arrIdx] = [...tableau[targetCard.arrIdx], tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx)]
+        tableau[targetCard.arrIdx].push(...tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx))
       }
       //else if king to empty space
       //else if card to ace pile
+      if (targetCard.location === acePiles && (targetCard.rank === selectedCard.rank +1 && targetCard.suit === selectedCard.suit) || (acePiles[targetCard.arrIdx].length === 0 && selectedCard.rank === 1) ) {
+        console.log("this would work")
+        acePiles[targetCard.arrIdx].push(tableau[selectedCard.arrIdx][selectedCard.cardIdx])
+        tableau[selectedCard.arrIdx].pop()
+
+      }
     } else if (selectedCard.location === acePiles) {
       //ace to other blank column
       //non ace to tableau
@@ -100,8 +106,6 @@ function move(selectedCard, targetCard) {
       //king to blank column
     }
   }
-  selectedCard = null
-  targetCard = null
   revealCards()
   render()
 }
@@ -112,7 +116,7 @@ function selectCard(event) {
     selectedLocation = tableau
     arrIdx = event.target.parentNode.id[3]
   }
-  if (selectedLocation === "ace-piles") {
+  if (event.target.parentNode.parentNode.id === "ace-piles") {
     selectedLocation = acePiles
     arrIdx = event.target.parentNode.id[3]
   }
@@ -120,7 +124,6 @@ function selectCard(event) {
     arrIdx = 0
     selectedLocation = wastePile
   }
-  console.log(selectedLocation)
 
   if (!selectedCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.classList.contains("outline") && event.target.id !== "stock-pile") {
     selectedCard = {
@@ -132,6 +135,7 @@ function selectCard(event) {
     }
     if (selectedCard.suit === "c" || selectedCard.suit === "s") selectedCard.color = "black"
     else selectedCard.color = "red"
+    if (event.target.id.length === 3) selectedCard.rank = parseInt(event.target.id[1] + event.target.id[2])
   } else if (selectedCard && !targetCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.parentNode.classList.contains("draw-piles")) {
     targetCard = {
       location: selectedLocation,
@@ -142,8 +146,13 @@ function selectCard(event) {
     }
     if (selectedCard.suit === "c" || selectedCard.suit === "s") selectedCard.color = "black"
     else selectedCard.color = "red"
+    if (event.target.id.length === 3) targetCard.rank = parseInt(event.target.id[1] + event.target.id[2])
   }
-  if (selectedCard && targetCard) move(selectedCard, targetCard)
+  if (selectedCard && targetCard) {
+    move(selectedCard, targetCard)
+    selectedCard = null
+    targetCard = null
+  }
 
 
 
