@@ -71,21 +71,29 @@ body {
 }
 
 .ace-pile > .card:not(.outline) {
-    border: .5vmin solid rgb(226, 226, 226)
+    border: .5vmin solid rgb(226, 226, 226);
 }
 
 .card:hover:not(.xx) {
-    border: .5vmin double gold;
-    background-color: rgb(226, 226, 226)
+    background-color: rgb(226, 226, 226);
+    border-color: lightgray;
+}
+
+.card:active:not(.xx) {
+ background-color: white;
+}
+
+#stock-pile:not(.outline) {
+    border: .5vmin solid rgb(226, 226, 226)
 }
 
 #stock-pile:hover {
-    border: .5vmin double gold;
-    background-color: lightgray;
+    background-color: rgb(226, 226, 226);
+    border-color: lightgray;
 }
 
-#waste-pile {
-    border: .1vmin solid white
+#waste-pile:not(.outline) {
+    border: .5vmin solid lightgray;
 }
 
 #reset-button {
@@ -100,6 +108,11 @@ body {
 #reset-button:hover {
     background-color: rgb(77, 58, 9);
     color: burlywood;
+}
+
+#reset-button:active {
+    background-color: lightgray;
+    color: gray;
 }
 
 #moves {

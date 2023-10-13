@@ -52,6 +52,7 @@ function init() {
   revealCards()
   render()
 
+  timerEl.innerText = "TIME: 00:00"
   if (timerInterval) clearInterval(timerInterval)
   timerInterval = setInterval(incrementTimer, 1000)
 }
@@ -88,16 +89,13 @@ function draw() {
 
 function move(selectedCard, targetCard) {
   if (selectedCard !== targetCard) {
-    console.log("not same card")
     if (selectedCard.location === tableau) {
       // Stack from Tableau to Tableau
-      console.log(selectedCard.color, targetCard.color)
       if (selectedCard.rank > 1 && selectedCard.color !== targetCard.color && selectedCard.rank === targetCard.rank -1) {
         tableau[targetCard.arrIdx].push(...tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx))
       }
       // King from Tableau to Empty Column
       else if (selectedCard.rank === 13 && tableau[targetCard.arrIdx].length === 0) {
-        console.log("tab king move")
         tableau[targetCard.arrIdx].push(...tableau[selectedCard.arrIdx].splice(selectedCard.cardIdx))
       }
       // Card from Tableau to Ace Pile
@@ -167,6 +165,7 @@ function selectCard(event) {
     if (selectedCard.suit === "c" || selectedCard.suit === "s") selectedCard.color = "black"
     else selectedCard.color = "red"
     if (event.target.id.length === 3) selectedCard.rank = parseInt(event.target.id[1] + event.target.id[2])
+    event.target.style.border = ".5vmin double red"
   } else if (selectedCard && !targetCard && event.target.classList.contains("card") && !event.target.classList.contains("xx") && !event.target.parentNode.classList.contains("draw-piles")) {
     targetCard = {
       location: selectedLocation,
@@ -185,8 +184,6 @@ function selectCard(event) {
     targetCard = null
   }
   }
-  // console.log(`selected: ${selectedCard.suit + selectedCard.rank}, target: ${targetCard.suit + targetCard.rank}`)
-// }
 
 function render() {
   // Render Ace Piles
@@ -198,7 +195,7 @@ function render() {
     newCardEl.classList.add("card", "large", `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`)
     newCardEl.id = `${acePile[acePile.length - 1].suit}${acePile[acePile.length - 1].rank}`
 }
-    console.log(acePile)
+
     aceDivArr[acePiles.indexOf(acePile)].appendChild(newCardEl)
   })
   // Render tableau
@@ -224,6 +221,7 @@ function render() {
   wastePileDiv.className = "card xlarge"
   if (wastePile.length === 0) wastePileDiv.classList.add("outline")
   else if (wastePile.length > 0) wastePileDiv.classList.add(`${wastePile[0].suit}${wastePile[0].rank}`)
+  wastePileDiv.style.border = null
 
   // Render Move Counter
   counterEl.innerText = `MOVES: ${moveCounter}`
@@ -248,6 +246,7 @@ function incrementTimer() {
 // TODO change comparison for selected and target card in move function, they're reference types
 // TODO win message
 // TODO highlight selection
+// TODO length error moving ace to tableau
 
 // TODO clean formatting and remove vestigial comments
 // TODO delete console logs when finished
@@ -258,16 +257,11 @@ function incrementTimer() {
     at move (script.js:105:66)
     at selectCard (script.js:176:5)
     at HTMLDivElement.<anonymous> (script.js:19:44) */
-
-// TODO ace pile css border discrepancy
+// TODO add consistency in css color definitions
+// TODO move draw and waste piles above tableau
 // TODO add rules page link to top bar
 // TODO add ability to see top 3 waste pile cards
-// TODO change anon. function from card selection to named function
-// TODO implement move counter
-// TODO implement timer
-// TODO fonts + fallback
 // TODO gradients everywhere (including moz and fallback color)
-// TODO consider moving card reveal to its own function instead of being expressed in move function
 // TODO change card size according to screen size
 // TODO add sound
 // TODO add score, the amount of moves multiplied by something like 30 minutes minus the games time, capping out at 0, input high scores with mongoDB later on
