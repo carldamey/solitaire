@@ -3,7 +3,7 @@
   const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 	/*----- state variables -----*/
-  let deck, tableau, stockPile, wastePile, acePiles, selectedLocation, selectedCard, targetCard, winState
+  let deck, tableau, stockPile, wastePile, acePiles, selectedLocation, selectedCard, targetCard, winState, moveCounter, timerMin, timerSec, timerInterval
 
 	/*----- cached elements  -----*/
   const cardsDiv = document.getElementById("cards")
@@ -14,6 +14,8 @@
   const stockPileDiv = document.getElementById("stock-pile")
   const wastePileDiv = document.getElementById("waste-pile")
   const resetButton = document.getElementById("reset-button")
+  const timerEl = document.getElementById("timer")
+  const counterEl = document.getElementById("moves")
 
 	/*----- event listeners -----*/
 gameDiv.addEventListener("click", event => selectCard(event))
@@ -24,7 +26,7 @@ resetButton.addEventListener("click", init)
 init()
 
 function init() {
-  winstate = false
+  winstate = false; moveCounter = 0; timerMin = 0; timerSec = 0 
   deck = []; tableau = [[], [], [], [], [], [], []]; stockPile = []; wastePile = []; acePiles = [[], [], [], [],]
   // Fill the deck array with card objects
   for (let suit in SUITS) {
@@ -49,6 +51,9 @@ function init() {
   }
   revealCards()
   render()
+
+  if (timerInterval) clearInterval(timerInterval)
+  timerInterval = setInterval(incrementTimer, 1000)
 }
 
 function revealCards() {
@@ -77,6 +82,7 @@ function draw() {
     stockPile = [...wastePile].reverse()
     wastePile = []
   }
+  moveCounter++
   render()
 }
 
@@ -128,6 +134,7 @@ function move(selectedCard, targetCard) {
         wastePile.shift()
     }
   }
+  moveCounter++
   revealCards()
   render()
   checkWin()
@@ -217,10 +224,22 @@ function render() {
   wastePileDiv.className = "card xlarge"
   if (wastePile.length === 0) wastePileDiv.classList.add("outline")
   else if (wastePile.length > 0) wastePileDiv.classList.add(`${wastePile[0].suit}${wastePile[0].rank}`)
+
+  // Render Move Counter
+  counterEl.innerText = `MOVES: ${moveCounter}`
 }
 
 function checkWin() {
   if (acePiles.every(acePile => acePile.length === 13)) winState = true
+}
+
+function incrementTimer() {
+  timerSec++
+  if (timerSec === 60) {
+    timerSec = 0
+    timerMin++
+  } 
+  timerEl.innerText = `TIME: ${String(timerMin).padStart(2, 0)}:${String(timerSec).padStart(2, 0)}`
 }
 
 
@@ -254,115 +273,3 @@ function checkWin() {
 // TODO add score, the amount of moves multiplied by something like 30 minutes minus the games time, capping out at 0, input high scores with mongoDB later on
 // TODO make hover only gray and select glow yellow
 // TODO make selections flash red if invalid
-
-/*
-
-If a card is clicked, it is highlighted and stored in a selectedCard variable
-If it is clicked again, the highlight is removed and the card is deselected
-
-When a second card is clicked, it is checked for legality
-
-LEGAL MOVES: 
-  • A non-ace card from the tableau to another tableau column, of which the top card is an opposite suit +1 
-  • A king from the tableau or wastepile to an empty tableau column
-  • A card from the bottom of a column to its respective ace pile -1
-  • A non-ace card at the top of an ace pile to a tableau column, of which the top card is an opposite suit +1
-  • A non-ace top card of the waste pile
-  • An ace from the top of the waste pile to its respective empty ace pile
-  • An ace from the tableau to its respective empty ace pile
-
-
-
-At the end of every move function, increment the move counter by 1 and check for a winner,
-if all ace piles have 13 as the top card, the player wins and is prompted to play again.
-
-When rendering:
-  If a card is "?", then represent it with a face down card
-
-
-Icebox features:
-•Double click to move card to ace pile if legal
-•Sound
-•Option to view entire wastepile
-•Move counter
-•Timer
-•Rule Modifications
-•Windows 98/xp style visuals
-*/
-
-
-
-
-
-
-
-
-//     /*----- constants -----*/
-// const suits = ['s', 'c', 'd', 'h'];
-// const ranks = ['02', '03', '04', '05', '06', '07', '08', '09', '10', 'J', 'Q', 'K', 'A'];
-
-// // Build an 'original' deck of 'card' objects used to create shuffled decks
-// const originalDeck = buildOriginalDeck();
-// renderDeckInContainer(originalDeck, document.getElementById('original-deck-container'));
-
-// /*----- app's state (variables) -----*/
-// let shuffledDeck;
-
-// /*----- cached element references -----*/
-// const shuffledContainer = document.getElementById('shuffled-deck-container');
-
-// /*----- event listeners -----*/
-// document.querySelector('button').addEventListener('click', renderNewShuffledDeck);
-
-// /*----- functions -----*/
-// function getNewShuffledDeck() {
-//   // Create a copy of the originalDeck (leave originalDeck untouched!)
-//   const tempDeck = [...originalDeck];
-//   const newShuffledDeck = [];
-//   while (tempDeck.length) {
-//     // Get a random index for a card still in the tempDeck
-//     const rndIdx = Math.floor(Math.random() * tempDeck.length);
-//     // Note the [0] after splice - this is because splice always returns an array and we just want the card object in that array
-//     newShuffledDeck.push(tempDeck.splice(rndIdx, 1)[0]);
-//   }
-//   return newShuffledDeck;
-// }
-
-// function renderNewShuffledDeck() {
-//   // Create a copy of the originalDeck (leave originalDeck untouched!)
-//   shuffledDeck = getNewShuffledDeck();
-//   renderDeckInContainer(shuffledDeck, shuffledContainer);
-// }
-
-// function renderDeckInContainer(deck, container) {
-//   container.innerHTML = '';
-//   // Let's build the cards as a string of HTML
-//   let cardsHtml = '';
-//   deck.forEach(function(card) {
-//     cardsHtml += `<div class="card ${card.face}"></div>`;
-//   });
-//   // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup 
-//   // const cardsHtml = deck.reduce(function(html, card) {
-//   //   return html + `<div class="card ${card.face}"></div>`;
-//   // }, '');
-//   container.innerHTML = cardsHtml;
-// }
-
-// function buildOriginalDeck() {
-//   const deck = [];
-//   // Use nested forEach to generate card objects
-//   suits.forEach(function(suit) {
-//     ranks.forEach(function(rank) {
-//       deck.push({
-//         // The 'face' property maps to the library's CSS classes for cards
-//         face: `${suit}${rank}`,
-//         // Setting the 'value' property for game of blackjack, not war
-//         value: Number(rank) || (rank === 'A' ? 11 : 10)
-//       });
-//     });
-//   });
-//   return deck;
-// }
-
-// renderNewShuffledDeck();
-
