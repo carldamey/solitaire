@@ -48,6 +48,7 @@ If you manage to win, you will receive a score based on the amount of moves (car
 - Add audio feedback to moves
 - Fix minor issue with moving kings to ace slots
 - Improve visuals of final score card
+- Allow resetting after win in a clean fashion
 
 ## Original Pitch
 
