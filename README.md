@@ -11,7 +11,7 @@ This game was independently developed over the course of a week as a bootcamp su
 - Javascript
 - HTML
 - CSS
-###  Frameworks: 
+###  Frameworks/Libraries: 
 - CSS Card Library - https://github.com/jhdo95/War/tree/main/css/card-library
 ### Software:
 - VSCodium - https://vscodium.com/
