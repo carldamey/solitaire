@@ -1,4 +1,4 @@
-# Solitaire
+# SOLITAIRE
 https://carldamey.github.io/solitaire/
 
 ![Solitaire Screenshot](/etc/Solitaire%20Screenshot.png)
@@ -6,7 +6,7 @@ Klondike solitaire is the most commonly known and played version of the Solitair
 
 This game was independently developed over the course of a week as a bootcamp submission, capping off a unit on front end languages.
 
-## Technologies Used
+## TECHNOLOGIES USED
 ### Languages: 
 - Javascript
 - HTML
@@ -17,7 +17,7 @@ This game was independently developed over the course of a week as a bootcamp su
 - VSCodium - https://vscodium.com/
 
 
-## Getting Started
+## GETTING STARTED
 As the game begins, you are dealt 28 cards across 7 columns, these cards are only revealed once they have reached the bottom of their respective column. The remaining 24 cards are placed into the Stockpile.
 
 Your goal is to move all cards from all 7 columns and the Stockpile into the 4 ace slots above the tableau. To do this, click on a card to select it, it will become highlighted, click again to deselect, or click another card to make a move using those two selections.
@@ -38,7 +38,7 @@ If you manage to win, you will receive a score based on the amount of moves (car
 - An ace to a different empty Ace Pile (this feature is entirely useless but I for some reason put effort into implementing it)
 - A non-ace card to a Tableau card that is one rank higher and the opposite suit color
 
-## Icebox Features
+## ICEBOX FEATURES
 - Add consistency in CSS color formats
 - Move Draw & Waste Piles above Tableau
 - Add Ability to View Rules During Gameplay
@@ -50,7 +50,7 @@ If you manage to win, you will receive a score based on the amount of moves (car
 - Improve visuals of final score card
 - Allow resetting after win in a clean fashion
 
-## Original Pitch
+## ORIGINAL PITCH
 
 Klondike solitaire is the most commonly known and played version of the Solitaire family of card games. It is fondly remembered by those who grew up on older Windows operating systems, especially those without internet access, as many of these operating systems came with it installed alongside lackluster video editing software and strange royalty-free mp3s.
 ![Solitaire Wireframe](/etc/Solitaire%20Wireframe.png)
